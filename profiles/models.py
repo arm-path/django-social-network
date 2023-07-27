@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 from django.utils.text import gettext_lazy as _
 
 
@@ -15,6 +16,7 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         GlobaslUserModel = apps.get_model(self.model._meta.app_label, self.model._meta.object_name)
         username = GlobaslUserModel.normalize_username(username)
+        extra_fields.setdefault('user_slug', slugify(username))
         user = self.model(email=email, username=username, **extra_fields)
         user.password = make_password(password)
         user.save(using=self._db)
@@ -45,6 +47,7 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(_('email'), max_length=71, unique=True)
     username = models.CharField(_('username'), max_length=150, unique=True, validators=[username_validator])
+    user_slug = models.SlugField(_('suser slug'), max_length=150, unique=True)
     first_name = models.CharField(_('first name'), max_length=150, blank=True)
     last_name = models.CharField(_('last name'), max_length=150, blank=True)
     image = models.ImageField(_('image'), upload_to='profiles/%Y/%m', blank=True)
@@ -84,5 +87,9 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
 
 
 class User(AbstractUser):
+
+    def __str__(self):
+        return self.username
+
     class Meta(AbstractUser.Meta):
         swappable = "AUTH_USER_MODEL"

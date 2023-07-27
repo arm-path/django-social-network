@@ -28,7 +28,15 @@
     {% endwith %}
     <div class="profile-posts">
         <h2 class="title-center"> --- Posts --- </h2>
-        <textarea name="" id="" cols="40" style="width: 100%"></textarea>
+        <div class="block-right"><a class="nav-link" href="{% url 'post:create' %}">Create post</a></div>
+        {% for obj in posts %}
+        <div class="post">
+            <a class="nav-link" href="{{ obj.get_absolute_url }}">{{ obj.title }}</a><br/>
+            created: {{ obj.created|date:"m-d-Y H:i:s" }}
+            <hr/>
+        </div>
+        {% endfor %}
+
     </div>
 </div>
 

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.db.models import Q
 
+from posts.models import Post
 from .forms import UserReistrationForm, UserLoginForm, ProfileChangeForm
 from .models import User
 
@@ -40,7 +41,8 @@ def user_login(request):
 
 @login_required
 def user_detail(request):
-    return render(request, 'profiles/detail.html', {'section': 'profile'})
+    posts = Post.objects.filter(user=request.user)
+    return render(request, 'profiles/detail.html', {'section': 'profile', 'posts': posts})
 
 
 @login_required
