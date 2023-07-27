@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Change | {{ request.user.get_full_name }} {% endblock %}
+
+
+{% block content %}
+<div class="profile-change-container">
+    <h2 class="title-center">Change Profile</h2>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="button-confirm">CHANGE</button>
+    </form>
+</div>
+
+
+{% endblock %}

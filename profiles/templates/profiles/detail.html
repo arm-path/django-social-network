@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} profile | {{ request.user.get_full_name }} {% endblock %}
+
+
+{% block content %}
+
+<div class="profile-container">
+    {% with user=request.user %}
+    <div class="profile-image">
+        {% if user.image %}
+        <img class="profile-image-show" src="{{ user.image.url }}">
+        {% else %}
+        <img class="profile-image-show" src="{% static 'image/no_image.jpg' %}" alt="">
+        {% endif %}
+    </div>
+    <div class="profile-information">
+        <div><b>Email: </b>{{ user.email }}</div>
+        <div><b>Username: </b>{{ user.username }}</div>
+        <div><b>First name: </b>{%if user.first_name%}{{user.first_name}}{%else%}Not filled{%endif%}</div>
+        <div><b>Last name: </b>{%if user.last_name%}{{user.last_name}}{%else%}Not filled{%endif%}</div>
+        <div><b>Date: </b>{%if user.date_of_birth%}{{user.date_of_birth}}{%else%}Not filled{%endif%}</div>
+        <div><b>City: </b>{%if user.city%}{{user.city}}{%else%}Not filled{%endif%}</div>
+        <hr/>
+        <div><a class="nav-link" href="{% url 'profile:change' %}"> Редактировать</a></div>
+    </div>
+    {% endwith %}
+    <div class="profile-posts">
+        <h2 class="title-center"> --- Posts --- </h2>
+        <textarea name="" id="" cols="40" style="width: 100%"></textarea>
+    </div>
+</div>
+
+{% endblock %}
