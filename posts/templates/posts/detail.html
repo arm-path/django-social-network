@@ -4,5 +4,15 @@
 
 {% block content %}
 
+<h3>{{ post.title }}</h3>
+<p>
+    <small>
+        <b>created: </b>{{ post.created|date:"m-d-Y H:i:s" }} <br/>
+        <b>updated: </b> {{ post.updated|date:"m-d-Y H:i:s" }} <br />
+        <b>author: </b> {{ post.user.get_full_name }}
+    </small>
+
+</p>
+<p>{{ post.content|safe }}</p>
 
 {% endblock %}

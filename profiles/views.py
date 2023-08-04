@@ -39,6 +39,12 @@ def user_login(request):
     return render(request, 'profiles/login.html', {'form': form})
 
 
+def user_list(request):
+    users = User.objects.all()
+    return render(request, 'profiles/list.html', {'section': 'users',
+                                                  'users': users})
+
+
 @login_required
 def user_detail(request):
     posts = Post.objects.filter(user=request.user)

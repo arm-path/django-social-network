@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ckeditor',
     'ckeditor_uploader',
-    'posts.apps.PostsConfig'
+    'posts.apps.PostsConfig',
+    'friends.apps.FriendsConfig'
 ]
 
 MIDDLEWARE = [
