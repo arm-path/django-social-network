@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ckeditor',
     'ckeditor_uploader',
+    'easy_thumbnails',
     'posts.apps.PostsConfig',
     'friends.apps.FriendsConfig'
 ]
@@ -122,6 +123,14 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+ACTIONS_USER = {
+    'subscribe': 'subscribe',
+    'cancel': 'cancel',
+    'confirm': 'confirm',
+    'remove': 'remove',
+    'black_list': 'black_list'
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

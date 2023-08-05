@@ -13,7 +13,7 @@ class ProfileAdmin(UserAdmin):
     search_fields = ('email', 'username', 'first_name', 'last_name')
     readonly_fields = ('get_image_detail',)
     fieldsets = (
-        (None, {'fields': ('email', 'username', 'password')}),
+        (None, {'fields': ('email', 'username', 'user_slug', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'image', 'get_image_detail', 'date_of_birth')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions',), },),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),

@@ -1,3 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
 
-# Create your views here.
+from .forms import FriendForm
+from .services import action_friend
+
+
+def action(request):
+    form = FriendForm(request.POST)
+    if form.is_valid():
+        action_friend(request.user, form.cleaned_data['user'])
+    return redirect('profile:list')

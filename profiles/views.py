@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from django.db.models import Q
+from django.db.models import Q, Case, When, CharField, Value
+from django.conf import settings
 
 from posts.models import Post
+from friends.forms import FriendForm
+from friends.models import Friend
 from .forms import UserReistrationForm, UserLoginForm, ProfileChangeForm
 from .models import User
 
@@ -31,7 +34,7 @@ def user_login(request):
             user = authenticate(request, username=email, password=password)
             if user:
                 login(request, user)
-                return redirect('profile:detail')
+                return redirect('profile:me')
             form.add_error('__all__', 'Login or password entered incorrectly!')
 
     if request.method == 'GET':
@@ -39,16 +42,31 @@ def user_login(request):
     return render(request, 'profiles/login.html', {'form': form})
 
 
+@login_required
 def user_list(request):
-    users = User.objects.all()
-    return render(request, 'profiles/list.html', {'section': 'users',
-                                                  'users': users})
+    action = settings.ACTIONS_USER
+    user = User.objects.annotate(
+        action=Case(
+            When(friend_requests__user=request.user, friend_requests__friends=True, then=Value(action['remove'])),
+            When(subscriptions__subscription=request.user, subscriptions__friends=True,then=Value(action['remove'])),
+            When(friend_requests__user=request.user, then=Value(action['cancel'])),
+            When(subscriptions__subscription=request.user, then=Value(action['confirm'])),
+            default=Value(action['subscribe']), output_field=CharField())).exclude(username=request.user.username)
+    context = {'section': 'users', 'users': user}
+    return render(request, 'profiles/list.html', context=context)
 
 
 @login_required
-def user_detail(request):
-    posts = Post.objects.filter(user=request.user)
-    return render(request, 'profiles/detail.html', {'section': 'profile', 'posts': posts})
+def user_detail(request, user_slug=None):
+    if user_slug:
+        if request.user.user_slug == user_slug:
+            return redirect('profile:me')
+        user = get_object_or_404(User, user_slug=user_slug)
+        posts = Post.objects.filter(user=user)
+    else:
+        user = request.user
+        posts = Post.objects.filter(user=request.user)
+    return render(request, 'profiles/detail.html', {'section': 'profile', 'user': user, 'posts': posts})
 
 
 @login_required

@@ -13,5 +13,6 @@ class Friend(models.Model):
         return f'{self.user} {self.subscription}'
 
     class Meta:
+        unique_together = ('user', 'subscription')
         verbose_name = 'firend'
         verbose_name_plural = 'friends'

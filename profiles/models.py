@@ -7,6 +7,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.text import gettext_lazy as _
+from django.urls import reverse_lazy
 
 
 class UserManager(BaseUserManager):
@@ -47,7 +48,7 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(_('email'), max_length=71, unique=True)
     username = models.CharField(_('username'), max_length=150, unique=True, validators=[username_validator])
-    user_slug = models.SlugField(_('suser slug'), max_length=150, unique=True)
+    user_slug = models.SlugField(_('user slug'), max_length=150, unique=True)
     first_name = models.CharField(_('first name'), max_length=150, blank=True)
     last_name = models.CharField(_('last name'), max_length=150, blank=True)
     image = models.ImageField(_('image'), upload_to='profiles/%Y/%m', blank=True)
@@ -87,6 +88,9 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
 
 
 class User(AbstractUser):
+
+    def get_absolute_url(self):
+        return reverse_lazy('profile:detail', args=[self.user_slug])
 
     def __str__(self):
         return self.username

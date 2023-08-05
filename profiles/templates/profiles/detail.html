@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load thumbnail %}
 
 {% block title %} profile | {{ request.user.get_full_name }} {% endblock %}
 
@@ -7,10 +8,9 @@
 {% block content %}
 
 <div class="profile-container">
-    {% with user=request.user %}
     <div class="profile-image">
         {% if user.image %}
-        <img class="profile-image-show" src="{{ user.image.url }}">
+        <img class="profile-image-show" src="{% thumbnail user.image 300x300 %}">
         {% else %}
         <img class="profile-image-show" src="{% static 'image/no_image.jpg' %}" alt="">
         {% endif %}
@@ -25,7 +25,6 @@
         <hr/>
         <div><a class="nav-link" href="{% url 'profile:change' %}"> Редактировать</a></div>
     </div>
-    {% endwith %}
     <div class="profile-posts">
         <h2 class="title-center"> --- Posts --- </h2>
         <div class="block-right"><a class="nav-link" href="{% url 'post:create' %}">Create post</a></div>
