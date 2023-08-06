@@ -132,6 +132,9 @@ ACTIONS_USER = {
     'black_list': 'black_list'
 }
 
+TOTAL_USER_PAGE = 7
+TOTAL_POST_PAGE = 12
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 

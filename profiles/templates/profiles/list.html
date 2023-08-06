@@ -8,10 +8,13 @@
 
 <h3 class="title-center">Users</h3>
 <hr class="title-center" width="50%"/>
-{% for user in users %}
+<div class="search-container">
+    {% include 'includes/search.html' %}
+</div>
+{% for user in object_list %}
 <div class="users">
     <div class="user-image">
-        <a href="#profile">
+        <a href="{{ user.get_absolute_url }}">
             {% if user.image %}
             <img class="user-image-show" src="{% thumbnail user.image 170x170 %}" alt=""/>
             {% else %}
@@ -25,7 +28,7 @@
                 <a class="nav-link" href="{{ user.get_absolute_url }}">{{ user.get_full_name }}</a>
             </div>
             <div>
-                <form action="{% url 'friend:add' %}" method="POST">
+                <form action="{% url 'friend:action' 'profile' %}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="user" value="{{ user.id }}">
                     <input type="hidden" name="action" value="{{ user.action }}">
@@ -39,5 +42,7 @@
     </div>
 </div>
 {% endfor %}
+
+{% include 'includes/pagination.html' %}
 
 {% endblock %}

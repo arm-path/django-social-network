@@ -23,7 +23,11 @@
                 Profile
             </a>
         </div>
-        <div class="nav-container"><a class="nav-link" href="#Friends"> Friends </a></div>
+        <div class="nav-container">
+            <a class="nav-link {% if section == 'friend' %} active {% endif %}" href="{% url 'friend:friends' %}">
+                Friends
+            </a>
+        </div>
         <div class="nav-container"><a class="nav-link" href="#Dialogs"> Dialogs </a></div>
         <div class="nav-container"><a class="nav-link" href="#News"> News </a></div>
         <div class="nav-container">

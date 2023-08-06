@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% load static %}
+
+{% block title %} Friends {% endblock %}
+
+{% block content %}
+<div class="frind-header-container">
+    <div class="friend-header-item friend-header-confirm">
+        <a class="nav-link" style="font-size: 1.2rem" href="{% url 'friend:friends' %}">
+            Friends
+        </a>
+    </div>
+    <div class="friend-header-item friend-header-request">
+        <a class="nav-link" style="font-size: 1.2rem" href="{% url 'friend:requests' %}">
+            Friend requests
+        </a>
+    </div>
+    <div class="friend-header-item friend-header-subscribers">
+        <a class="nav-link" style="font-size: 1.2rem" href="{% url 'friend:subscriptions' %}">
+            Subscriptions
+        </a>
+    </div>
+</div>
+<div class="search-container" style="margin-top: 1rem">
+    {% include 'includes/search.html' %}
+</div>
+<div class="friend-users">
+    {% for user in object_list %}
+    <div class="users">
+        <div class="user-image">
+            <a href="{{ user.get_absolute_url }}">
+                {% if user.image %}
+                <img class="user-image-show" src="{% thumbnail user.image 170x170 %}" alt=""/>
+                {% else %}
+                <img class="user-image-show" src="{% static 'image/no_image.jpg' %}" alt="">
+                {% endif %}
+            </a>
+        </div>
+        <div class="user-information">
+            <div>
+                <div>
+                    <a class="nav-link" href="{{ user.get_absolute_url }}">{{ user.get_full_name }}</a>
+                </div>
+                <div>
+                    <form action="{% url 'friend:action' 'friend' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="user" value="{{ user.id }}">
+                        <input type="hidden" name="action" value="{{ action }}">
+                        <button class="button-confirm" type="submit">{{ action }}</button>
+                        <a class="nav-button-confirm" href="#">Chat</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% include 'includes/pagination.html' %}
+
+{% endblock %}

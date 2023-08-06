@@ -23,20 +23,32 @@
         <div><b>Date: </b>{%if user.date_of_birth%}{{user.date_of_birth}}{%else%}Not filled{%endif%}</div>
         <div><b>City: </b>{%if user.city%}{{user.city}}{%else%}Not filled{%endif%}</div>
         <hr/>
-        <div><a class="nav-link" href="{% url 'profile:change' %}"> Редактировать</a></div>
+        {% if request.user == user %}
+        <div><a class="nav-link" href="{% url 'profile:change' %}"> Edit </a></div>
+        {% else %}
+        <div class="title-right"><a class="nav-link" href="#"> Chat </a></div>
+        {% endif %}
     </div>
     <div class="profile-posts">
         <h2 class="title-center"> --- Posts --- </h2>
+        {% if request.user == user %}
         <div class="block-right"><a class="nav-link" href="{% url 'post:create' %}">Create post</a></div>
-        {% for obj in posts %}
+        {% endif %}
+        <div class="search-container">
+            {% include 'includes/search.html' %}
+        </div>
+        {% for obj in object_list %}
         <div class="post">
             <a class="nav-link" href="{{ obj.get_absolute_url }}">{{ obj.title }}</a><br/>
             created: {{ obj.created|date:"m-d-Y H:i:s" }}
             <hr/>
         </div>
+        {% empty %}
+        <div class="title-center"> Posts not found </div>
         {% endfor %}
-
+        {% include 'includes/pagination.html' %}
     </div>
 </div>
+
 
 {% endblock %}
