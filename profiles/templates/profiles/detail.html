@@ -41,6 +41,11 @@
         <div class="post">
             <a class="nav-link" href="{{ obj.get_absolute_url }}">{{ obj.title }}</a><br/>
             created: {{ obj.created|date:"m-d-Y H:i:s" }}
+            <br>
+            {% if request.user == user %}
+            action: <a class="nav-link" style="font-size: 1rem" href="{% url 'posts:edit' obj.slug %}">Edit</a> |
+            <a class="nav-link" style="font-size: 1rem" href="{% url 'posts:delete' obj.slug %}">Delete</a>
+            {% endif %}
             <hr/>
         </div>
         {% empty %}

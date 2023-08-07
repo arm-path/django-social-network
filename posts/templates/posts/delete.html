@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} Delete | {{ post.title }} {% endblock %}
+
+{% block content %}
+
+<h3 class="title-center">Are you sure you want to delete?</h3>
+<p class="title-center">Title: {{ post.title }} </p>
+<form class="title-center" action="" method="POST">
+    {% csrf_token %}
+    <button class="button-confirm" type="submit">YES</button>
+    <a class="nav-button-confirm" href="{{ post.get_absolute_url }}">NO</a>
+</form>
+
+{% endblock %}

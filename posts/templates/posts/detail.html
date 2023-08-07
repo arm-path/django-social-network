@@ -4,12 +4,22 @@
 
 {% block content %}
 
-<h3>{{ post.title }}</h3>
+<h3>{{ post.title }}
+    {% if request.user == user %}
+    <small>
+        (<a class="nav-link" style="font-size: 1rem" href="{% url 'posts:edit' post.slug %}">Edit</a> |
+        <a class="nav-link" style="font-size: 1rem" href="{% url 'posts:delete' post.slug %}">Delete</a>)
+    </small>
+    {% endif %}
+</h3>
 <p>
     <small>
         <b>created: </b>{{ post.created|date:"m-d-Y H:i:s" }} <br/>
-        <b>updated: </b> {{ post.updated|date:"m-d-Y H:i:s" }} <br />
-        <b>author: </b> {{ post.user.get_full_name }}
+        <b>updated: </b> {{ post.updated|date:"m-d-Y H:i:s" }} <br/>
+        <b>author: </b>
+        <a class="nav-link" style="font-size: 1rem" href="{{ post.user.get_absolute_url }}">
+            {{ post.user.get_full_name }}
+        </a>
     </small>
 
 </p>
