@@ -103,6 +103,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'profiles.User'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'profiles.authenticate.EmailAuthenticationBackend',
+    'profiles.authenticate.UsernameAuthenticationBackend'
+]
+
+LOGIN_URL = '/profile/login/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 
 CKEDITOR_CONFIGS = {

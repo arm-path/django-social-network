@@ -16,16 +16,6 @@ class UserLoginForm(forms.Form):
     login = forms.CharField(label=_('login'), widget=forms.TextInput(attrs={"autofocus": True}))
     password = forms.CharField(label=_('password'), widget=forms.PasswordInput())
 
-    def clean_login(self):
-        login = self.cleaned_data['login']
-        try:
-            user = User.objects.get(Q(email=login) | Q(username=login))
-            if not user.is_active:
-                raise forms.ValidationError('This user is not active!')
-        except User.DoesNotExist:
-            raise forms.ValidationError('Specified user not found!')
-        return user
-
 
 class ProfileChangeForm(forms.ModelForm):
     class Meta:

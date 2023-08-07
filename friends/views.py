@@ -1,11 +1,13 @@
 from django.db.models import Q
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 from profiles.models import User
 from .forms import FriendForm
 from .services import action_friend, get_context
 
 
+@login_required
 def action(request, redirect_app_name):
     form = FriendForm(request.POST)
     print(request.POST)
@@ -16,6 +18,7 @@ def action(request, redirect_app_name):
     return redirect('profile:list')
 
 
+@login_required
 def friends(request):
     object_list = User.objects.filter(
         Q(friend_requests__user=request.user, friend_requests__friends=True) |
@@ -33,6 +36,7 @@ def requests(request):
     return render(request, 'friends/list.html', context=context)
 
 
+@login_required
 def subscriptions(request):
     object_list = User.objects.filter(
         friend_requests__user=request.user, friend_requests__friends=False

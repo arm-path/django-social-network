@@ -24,7 +24,7 @@
         <div><b>City: </b>{%if user.city%}{{user.city}}{%else%}Not filled{%endif%}</div>
         <hr/>
         {% if request.user == user %}
-        <div><a class="nav-link" href="{% url 'profile:change' %}"> Edit </a></div>
+        <div><a class="nav-link" href="{% url 'profile:edit' %}"> Edit </a></div>
         {% else %}
         <div class="title-right"><a class="nav-link" href="#"> Chat </a></div>
         {% endif %}

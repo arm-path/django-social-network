@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} Edit | {{ request.user.get_full_name }} {% endblock %}
+
+
+{% block content %}
+<div class="profile-change-container">
+    <h2 class="title-center">Edit Profile</h2>
+    <div class="title-right">
+        <a class="nav-button-confirm" href="{% url 'profile:change_password' %}">Change password</a>
+    </div>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="button-confirm">CHANGE</button>
+    </form>
+</div>
+
+
+{% endblock %}

@@ -1,8 +1,12 @@
 from django.conf import settings
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, update_session_auth_hash, login as auth_login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.db.models import Case, When, CharField, Value
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.views.decorators.http import require_http_methods
 
 from posts.models import Post
 from .forms import UserReistrationForm, UserLoginForm, ProfileChangeForm
@@ -10,7 +14,8 @@ from .models import User
 from .services import objects_page, search_user, search_post
 
 
-def user_registration(request):
+@require_http_methods(['GET', 'POST'])
+def registration(request):
     if request.method == 'POST':
         form = UserReistrationForm(request.POST)
         if form.is_valid():
@@ -24,15 +29,14 @@ def user_registration(request):
     return render(request, 'profiles/registration.html', {'form': form})
 
 
-def user_login(request):
+@require_http_methods(['GET', 'POST'])
+def login(request):
     if request.method == 'POST':
         form = UserLoginForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['login'].email
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=email, password=password)
+            user = authenticate(request, username=form.cleaned_data['login'], password=form.cleaned_data['password'])
             if user:
-                login(request, user)
+                auth_login(request, user)
                 return redirect('profile:me')
             form.add_error('__all__', 'Login or password entered incorrectly!')
 
@@ -42,7 +46,8 @@ def user_login(request):
 
 
 @login_required
-def user_list(request):
+@require_http_methods(['GET', 'POST'])
+def list(request):
     action = settings.ACTIONS_USER
     object_list = User.objects.annotate(
         action=Case(
@@ -50,7 +55,9 @@ def user_list(request):
             When(subscriptions__subscription=request.user, subscriptions__friends=True, then=Value(action['remove'])),
             When(friend_requests__user=request.user, then=Value(action['cancel'])),
             When(subscriptions__subscription=request.user, then=Value(action['confirm'])),
-            default=Value(action['subscribe']), output_field=CharField())).exclude(username=request.user.username)
+            default=Value(action['subscribe']), output_field=CharField())
+    ).exclude(username=request.user.username).distinct()
+
     if request.GET.get('search'):
         object_list = search_user(object_list, request.GET.get('search'))
     object_list = objects_page(object_list, settings.TOTAL_USER_PAGE, request.GET.get('page'))
@@ -59,7 +66,8 @@ def user_list(request):
 
 
 @login_required
-def user_detail(request, user_slug=None):
+@require_http_methods(['GET'])
+def detail(request, user_slug=None):
     if user_slug:
         if request.user.user_slug == user_slug:
             return redirect('profile:me')
@@ -74,12 +82,35 @@ def user_detail(request, user_slug=None):
 
 
 @login_required
-def profile_change(request):
+@require_http_methods(['GET', 'POST'])
+def edit(request):
     if request.method == 'POST':
         form = ProfileChangeForm(instance=request.user, data=request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('profile:detail')
+            return redirect('profile:me')
     if request.method == 'GET':
         form = ProfileChangeForm(instance=request.user)
-    return render(request, 'profiles/change.html', {'form': form})
+    return render(request, 'profiles/edit.html', {'form': form})
+
+
+@login_required
+@require_http_methods(['GET', 'POST'])
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            return redirect('profile:me')
+    if request.method == 'GET':
+        form = PasswordChangeForm(request.user)
+    return render(request, 'profiles/change_password.html', {'form': form})
+
+
+class ResetPassword(PasswordResetView):
+    success_url = reverse_lazy('profile:password_reset_done')
+
+
+class ConfirmResetPassword(PasswordResetConfirmView):
+    success_url = reverse_lazy('profile:password_reset_compile')

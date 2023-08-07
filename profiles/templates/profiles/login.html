@@ -7,6 +7,9 @@
     <h3 class="registration-title">LOGIN</h3>
     {% csrf_token %}
     {{ form.as_p }}
-    <button class="button-confirm" type="submit">LOGIN</button>
+    <a class="nav-link" style="font-size: 1rem" href="{% url 'profile:password_reset' %}">
+        Forgot your password?
+    </a><br/>
+    <button class="button-confirm" style="margin-top: 1rem" type="submit">LOGIN</button>
 </form>
 {% endblock %}
