@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %} Chat {% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <h3 class="title-center">
+        Messages (
+        <a class="nav-link" style="font-size: 1rem" href="{{ user.get_absolute_url }}">{{ user.get_full_name }}</a>
+        )
+    </h3>
+    <div class="chat-messages">
+        {% for message in messages %}
+        <div class="message">
+            <div>
+                <a class="nav-link {% if message.sender == request.user %}message-user-me{% else %} message-user {% endif %}"
+                   href="{{ message.sender.get_absolute_url }}">
+                    {{ message.sender.get_full_name }}
+                </a>
+                <small class="message-date">{{ message.created|date:"d.m.Y H:i" }}</small>
+            </div>
+            <div>{{ message.text }}</div>
+        </div>
+        {% endfor %}
+
+    </div>
+    <div class="chat-send-message">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input class="chat-input" type="text" placeholder="Write a message ...">
+            <button class="chat-button" type="submit">Send</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

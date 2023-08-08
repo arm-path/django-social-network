@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% load static %}
+
+
+{% block title %} Dialogs {% endblock %}
+
+
+{% block content %}
+
+<h3 class="title-center">Chats</h3>
+
+<div class="dialog-container">
+    {% for chat in object_list %}
+    {% if chat.messages.all %}
+    {% with chat_messages=chat.messages.all.first %}
+    {% with user=chat_messages.sender %}
+    <div class="users">
+        <!--        TODO: {{ chat_messages.sender|templatetag }} return user-->
+        <div class="user-image">
+            <a href="{{ user.get_absolute_url }}">
+                {% if user.image %}
+                <img class="chat-image-show" src="{% thumbnail user.image 100x100 %}" alt=""/>
+                {% else %}
+                <img class="chat-image-show" src="{% static 'image/no_image.jpg' %}" alt="">
+                {% endif %}
+            </a>
+        </div>
+        <div class="user-information">
+            <div>
+                <div>
+                    <a class="nav-link" href=" {% url 'chat:detail' user.username %}">{{ user.get_full_name }}</a>
+                </div>
+                <div>
+                    <a class="nav-link" style="font-size: 1rem" href=" {% url 'chat:detail' user.username %}">
+                        You: Text message
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    {% endwith %}
+    {% endwith %}
+    {% endif %}
+    {% empty %}
+    <div class="title-center">No messages</div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -23,7 +23,7 @@ def friends(request):
     object_list = User.objects.filter(
         Q(friend_requests__user=request.user, friend_requests__friends=True) |
         Q(subscriptions__subscription=request.user, subscriptions__friends=True)
-    ).exclude(username=request.user.username)
+    ).exclude(username=request.user.username).distinct()
     context = get_context(request, object_list, 'remove')
     return render(request, 'friends/list.html', context=context)
 
@@ -31,7 +31,7 @@ def friends(request):
 def requests(request):
     object_list = User.objects.filter(
         subscriptions__subscription=request.user, subscriptions__friends=False
-    ).exclude(username=request.user.username)
+    ).exclude(username=request.user.username).distinct()
     context = get_context(request, object_list, 'confirm')
     return render(request, 'friends/list.html', context=context)
 
@@ -40,6 +40,6 @@ def requests(request):
 def subscriptions(request):
     object_list = User.objects.filter(
         friend_requests__user=request.user, friend_requests__friends=False
-    ).exclude(username=request.user.username)
+    ).exclude(username=request.user.username).distinct()
     context = get_context(request, object_list, 'cancel')
     return render(request, 'friends/list.html', context=context)

@@ -32,7 +32,11 @@
                 Friends
             </a>
         </div>
-        <div class="nav-container"><a class="nav-link" href="#Dialogs"> Dialogs </a></div>
+        <div class="nav-container">
+            <a class="nav-link {% if section == 'chat' %} active {% endif %}" href="{% url 'chat:list' %}" >
+                Dialogs
+            </a>
+        </div>
         <div class="nav-container"><a class="nav-link" href="#News"> News </a></div>
         <div class="nav-container">
             <a class="nav-link {% if section == 'users' %} active {% endif %}" href="{% url 'profile:list' %}">

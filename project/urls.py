@@ -24,6 +24,7 @@ urlpatterns = [
     path('profile/', include('profiles.urls', namespace='profile')),
     path('post/', include('posts.urls', namespace='post')),
     path('friend/', include('friends.urls', namespace='friend')),
+    path('chat/', include('chat.urls', namespace='chat')),
     path('ckeditor/', include('ckeditor_uploader.urls'))
 ]
 

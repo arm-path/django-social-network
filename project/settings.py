@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'easy_thumbnails',
     'posts.apps.PostsConfig',
-    'friends.apps.FriendsConfig'
+    'friends.apps.FriendsConfig',
+    'chat.apps.ChatConfig'
 ]
 
 MIDDLEWARE = [

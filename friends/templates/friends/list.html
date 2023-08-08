@@ -48,7 +48,7 @@
                         <input type="hidden" name="user" value="{{ user.id }}">
                         <input type="hidden" name="action" value="{{ action }}">
                         <button class="button-confirm" type="submit">{{ action }}</button>
-                        <a class="nav-button-confirm" href="#">Chat</a>
+                        <a class="nav-button-confirm" href="{% url 'chat:detail' user.username %}">Chat</a>
                     </form>
                 </div>
             </div>
