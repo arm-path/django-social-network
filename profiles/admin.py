@@ -9,7 +9,7 @@ from .models import User
 
 @admin.register(User)
 class ProfileAdmin(UserAdmin):
-    list_display = ('email', 'username', 'first_name', 'last_name', 'date_of_birth', 'get_image')
+    list_display = ('email', 'username', 'user_slug', 'first_name', 'last_name', 'date_of_birth', 'get_image')
     search_fields = ('email', 'username', 'first_name', 'last_name')
     readonly_fields = ('get_image_detail',)
     fieldsets = (

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
 {% load static %}
+{% load get_companion %}
 
 
 {% block title %} Dialogs {% endblock %}
@@ -14,9 +15,8 @@
     {% for chat in object_list %}
     {% if chat.messages.all %}
     {% with chat_messages=chat.messages.all.first %}
-    {% with user=chat_messages.sender %}
+    {% with user=chat_messages|get_companion:request %}
     <div class="users">
-        <!--        TODO: {{ chat_messages.sender|templatetag }} return user-->
         <div class="user-image">
             <a href="{{ user.get_absolute_url }}">
                 {% if user.image %}
@@ -33,7 +33,8 @@
                 </div>
                 <div>
                     <a class="nav-link" style="font-size: 1rem" href=" {% url 'chat:detail' user.username %}">
-                        You: Text message
+                        {% if chat_messages.sender == request.user %} You: {% else %} {{ user.username }}: {% endif %}
+                        {{ chat_messages.text }}
                     </a>
                 </div>
             </div>

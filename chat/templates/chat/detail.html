@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %} Chat {% endblock %}
 
@@ -10,7 +11,8 @@
         )
     </h3>
     <div class="chat-messages">
-        {% for message in messages %}
+        <div id="messages"></div>
+        {% for message in chat.messages.all %}
         <div class="message">
             <div>
                 <a class="nav-link {% if message.sender == request.user %}message-user-me{% else %} message-user {% endif %}"
@@ -27,10 +29,20 @@
     <div class="chat-send-message">
         <form action="" method="POST">
             {% csrf_token %}
-            <input class="chat-input" type="text" placeholder="Write a message ...">
-            <button class="chat-button" type="submit">Send</button>
+            <input id="text" class="chat-input" type="text" placeholder="Write a message ...">
+            <button id="send" class="chat-button" type="submit">Send</button>
         </form>
     </div>
 </div>
 
+
 {% endblock %}
+
+{% block include_js %}
+{{ user.user_slug|json_script:'user_id' }}
+{{ request.user.user_slug|json_script:'me' }}
+{{ chat.id|json_script:'chat_id' }}
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'chat/script.js' %}"></script> {% endblock %}

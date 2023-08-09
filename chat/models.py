@@ -11,7 +11,7 @@ class Chat(models.Model):
     users = models.ManyToManyField(User, related_name='chats', validators=[MinValueValidator(2), MaxValueValidator(2)])
 
     def __str__(self):
-        return f'Chat number {self.pk}'
+        return f'Chat number {self.pk}: {[user.get_full_name() for user in self.users.all()]}'
 
     class Meta:
         verbose_name = 'Chat'
