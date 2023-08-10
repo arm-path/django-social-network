@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'posts.apps.PostsConfig',
     'friends.apps.FriendsConfig',
-    'chat.apps.ChatConfig'
+    'chat.apps.ChatConfig',
+    'news.apps.NewsConfig'
 ]
 
 MIDDLEWARE = [

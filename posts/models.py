@@ -1,8 +1,11 @@
 from django.db import models
 from django.urls import reverse_lazy
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from ckeditor_uploader.fields import RichTextUploadingField
 
 from profiles.models import User
+from news.models import Action
 
 
 class Post(models.Model):
@@ -25,3 +28,9 @@ class Post(models.Model):
         indexes = [models.Index(fields=['id', 'slug']),
                    models.Index(fields=['title']),
                    models.Index(fields=['created'])]
+
+
+@receiver(post_save, sender=Post)
+def create_action(sender, instance, created, **kwargs):
+    if created:
+        Action.objects.create(user=instance.user, verb='Wrote a post', target_object=instance)
