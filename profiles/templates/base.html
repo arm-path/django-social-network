@@ -37,7 +37,11 @@
                 Dialogs
             </a>
         </div>
-        <div class="nav-container"><a class="nav-link" href="#News"> News </a></div>
+        <div class="nav-container">
+            <a class="nav-link {% if section == 'news' %} active {% endif %}" href="{% url 'news:list' %}">
+                News
+            </a>
+        </div>
         <div class="nav-container">
             <a class="nav-link {% if section == 'users' %} active {% endif %}" href="{% url 'profile:list' %}">
                 Users

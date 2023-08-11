@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.conf import settings
 
 from profiles.models import User
 from news.models import Action
@@ -17,7 +18,7 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.user.username} | {self.title}'
+        return self.title
 
     def get_absolute_url(self):
         return reverse_lazy('post:detail', args=[self.user.user_slug, self.slug])
@@ -33,4 +34,4 @@ class Post(models.Model):
 @receiver(post_save, sender=Post)
 def create_action(sender, instance, created, **kwargs):
     if created:
-        Action.objects.create(user=instance.user, verb='Wrote a post', target_object=instance)
+        Action.objects.create(user=instance.user, verb=settings.ACTION_VERBS['create_post'], target_object=instance)

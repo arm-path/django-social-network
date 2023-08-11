@@ -154,6 +154,13 @@ ACTIONS_USER = {
 
 TOTAL_USER_PAGE = 7
 TOTAL_POST_PAGE = 12
+TATAL_NEW_PAGE = 7
+
+ACTION_VERBS = {
+    'subscribe': 'Subscribed to a',
+    'friend': 'Accepted friend offer from',
+    'create_post': 'Wrote a post'
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

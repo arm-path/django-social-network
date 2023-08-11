@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% load static %}
+
+{% block title %} News | Actions {% endblock %}
+
+
+{% block content %}
+<div>
+    <h3 class="title-center">News</h3>
+    {% for action in object_list %}
+    <div class="action">
+        {% with user=action.user %}
+        <div class="action-image">
+            <a href="{{ user.get_absolute_url }}">
+                {% if user.image %}
+                <img class="action-image-show" src="{% thumbnail user.image 100x100 %}" alt=""/>
+                {% else %}
+                <img class="action-image-show" src="{% static 'image/no_image.jpg' %}" alt="">
+                {% endif %}
+            </a>
+
+        </div>
+        <div class="action-information">
+            <div>
+                <a class="nav-link" href="{{ user.get_absolute_url }}">{{ user.get_full_name }}</a> {{ action.verb }}
+            </div>
+        </div>
+        {% endwith %}
+        <div class="action-target">
+            <div>
+                <a class="nav-link" href="{{ action.target_object.get_absolute_url }}">{{ action.target_object }}</a>
+            </div>
+        </div>
+        <div class="action-target-image">
+            {% if action.target_type.model == 'user' %}
+            {% with user=action.target_object %}
+            <a href="{{ user.get_absolute_url }}">
+                {% if user.image %}
+                <img class="action-image-show" src="{% thumbnail user.image 100x100 %}" alt=""/>
+                {% else %}
+                <img class="action-image-show" src="{% static 'image/no_image.jpg' %}" alt="">
+                {% endif %}
+            </a>
+            {% endwith %}
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% include 'includes/pagination.html' %}
+
+{% endblock %}

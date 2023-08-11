@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.conf import settings
 
 from profiles.models import User
 from news.models import Action
@@ -24,9 +25,10 @@ class Friend(models.Model):
 @receiver(post_save, sender=Friend)
 def create_action(sender, instance, created, **kwargs):
     if created:
-        Action.objects.create(user=instance.user, verb='Subscribed to a', target_object=instance.subscription)
+        Action.objects.create(user=instance.user, verb=settings.ACTION_VERBS['subscribe'],
+                              target_object=instance.subscription)
     if not created and instance.friends:
-        Action.objects.create(user=instance.subscription, verb='Accepted friend offer from',
+        Action.objects.create(user=instance.subscription, verb=settings.ACTION_VERBS['friend'],
                               target_object=instance.user)
-    if instance.black_list:
-        instance.friends = False
+        Action.objects.create(user=instance.user, verb=settings.ACTION_VERBS['friend'],
+                              target_object=instance.subscription)

@@ -25,3 +25,4 @@ class Action(models.Model):
             models.Index(fields=['target_type', 'target_id']),
             models.Index(fields=['-created'])
         ]
+        ordering = ['-created']
