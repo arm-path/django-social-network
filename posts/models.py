@@ -12,7 +12,7 @@ from news.models import Action
 class Post(models.Model):
     title = models.CharField(max_length=71)
     slug = models.SlugField(max_length=71, unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     content = RichTextUploadingField(blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -22,6 +22,9 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse_lazy('post:detail', args=[self.user.user_slug, self.slug])
+
+    def get_api_url(self):
+        return reverse_lazy('api:post_detail', args=[self.slug])
 
     class Meta:
         verbose_name = 'Post'

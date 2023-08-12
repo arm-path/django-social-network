@@ -93,6 +93,9 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse_lazy('profile:detail', args=[self.user_slug])
 
+    def get_api_url(self):
+        return reverse_lazy('api:detail', args=[self.user_slug])
+
     def __str__(self):
         return self.username
 

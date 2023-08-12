@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'ckeditor',
     'ckeditor_uploader',
     'easy_thumbnails',
@@ -155,6 +156,8 @@ ACTIONS_USER = {
 TOTAL_USER_PAGE = 7
 TOTAL_POST_PAGE = 12
 TATAL_NEW_PAGE = 7
+
+TOTAL_POST_PAGE_API = 7
 
 ACTION_VERBS = {
     'subscribe': 'Subscribed to a',
