@@ -1,6 +1,7 @@
+from django.conf import settings
+from django.core.paginator import Paginator
 from django.db.models import Q, F, CharField, Value
 from django.db.models.functions import Concat
-from django.core.paginator import Paginator
 
 
 def objects_page(objects, pages, page):
@@ -17,3 +18,17 @@ def search_user(object_list, search):
 
 def search_post(object_list, search):
     return object_list.filter(title__icontains=search)
+
+
+def set_action_user(object_list):
+    action = settings.ACTIONS_USER
+    for object in object_list:
+        if object.is_friend:
+            object.action = action['remove']
+        elif object.is_request_user:
+            object.action = action['cancel']
+        elif object.is_subscribed:
+            object.action = action['confirm']
+        else:
+            object.action = action['subscribe']
+    return object_list

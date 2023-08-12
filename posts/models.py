@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse_lazy
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete, pre_delete
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.conf import settings
 
@@ -35,3 +35,9 @@ class Post(models.Model):
 def create_action(sender, instance, created, **kwargs):
     if created:
         Action.objects.create(user=instance.user, verb=settings.ACTION_VERBS['create_post'], target_object=instance)
+
+
+@receiver(pre_delete, sender=Post)
+def delete_action(sender, instance=Post, **kwargs):
+    Action.objects.get(user=instance.user, verb=settings.ACTION_VERBS['create_post'],
+                       target_type__model='post', target_id=instance.id).delete()

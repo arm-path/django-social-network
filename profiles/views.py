@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, update_session_auth_hash, login as
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
-from django.db.models import Case, When, CharField, Value
+from django.db.models import Q, Case, Count, When
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_http_methods
@@ -11,7 +11,7 @@ from django.views.decorators.http import require_http_methods
 from posts.models import Post
 from .forms import UserReistrationForm, UserLoginForm, ProfileChangeForm
 from .models import User
-from .services import objects_page, search_user, search_post
+from .services import objects_page, search_user, search_post, set_action_user
 
 
 @require_http_methods(['GET', 'POST'])
@@ -48,19 +48,16 @@ def login(request):
 @login_required
 @require_http_methods(['GET', 'POST'])
 def list(request):
-    action = settings.ACTIONS_USER
     object_list = User.objects.annotate(
-        action=Case(
-            When(friend_requests__user=request.user, friend_requests__friends=True, then=Value(action['remove'])),
-            When(subscriptions__subscription=request.user, subscriptions__friends=True, then=Value(action['remove'])),
-            When(friend_requests__user=request.user, then=Value(action['cancel'])),
-            When(subscriptions__subscription=request.user, then=Value(action['confirm'])),
-            default=Value(action['subscribe']), output_field=CharField())
-    ).exclude(username=request.user.username).distinct()
-
+        is_request_user=Count(Case(When(friend_requests__user=request.user, friend_requests__friends=False, then=1))),
+        is_subscribed=Count(Case(When(subscriptions__subscription=request.user, subscriptions__friends=False, then=1))),
+        is_friend=Count(Case(When(Q(friend_requests__user=request.user, friend_requests__friends=True) |
+                                  Q(subscriptions__subscription=request.user, subscriptions__friends=True), then=1))),
+    ).exclude(username=request.user.username)
     if request.GET.get('search'):
         object_list = search_user(object_list, request.GET.get('search'))
     object_list = objects_page(object_list, settings.TOTAL_USER_PAGE, request.GET.get('page'))
+    object_list = set_action_user(object_list)
     context = {'section': 'users', 'object_list': object_list}
     return render(request, 'profiles/list.html', context=context)
 

@@ -1,7 +1,9 @@
 from asgiref.sync import async_to_sync
 from channels.exceptions import StopConsumer
+from django.db.models import Q
 
 from profiles.models import User
+from friends.models import Friend
 from .models import Chat, Message
 
 
@@ -25,6 +27,9 @@ class MessageWebsocketConsumer:
             self.chats = Chat.objects.filter(users__in=[self.me]).filter(users__in=[self.user])
             self.chat_id = self.scope['url_route']['kwargs']['chat_id']
             if not self.chats or self.chats[0].id != int(self.chat_id):
+                raise StopConsumer()
+            if not Friend.objects.filter(Q(user=self.me, subscription=self.user, friends=True) |
+                                         Q(user=self.user, subscription=self.me, friends=True)):
                 raise StopConsumer()
         except KeyError:
             raise StopConsumer()

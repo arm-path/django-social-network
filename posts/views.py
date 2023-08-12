@@ -17,6 +17,7 @@ def create(request):
             post.slug = slugify(post.title)
             post.user = request.user
             post.save()
+            return redirect(post.get_absolute_url())
     if request.method == 'GET':
         form = PostForm()
     return render(request, 'posts/create_edit.html', {'form': form, 'action': 'create'})
